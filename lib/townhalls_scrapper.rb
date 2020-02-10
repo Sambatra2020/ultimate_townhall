@@ -33,9 +33,11 @@ require 'json'
 		@@hash1 = Hash.new		
 		@@hash2 = Hash.new
 		@@hash3 = Hash.new
-		attr_accessor :hash, :hash1, :hash2, :hash3
+		@@hash4 = Hash.new
+		attr_accessor :hash, :hash1, :hash2, :hash3, :hash4
 		@@nomville = []
 		@@lien = []
+		@@hash1={}
 
 		def ville_ain_nom
 			page1 = Nokogiri::HTML(open("http://annuaire-des-mairies.com/ain.html")) 
@@ -59,7 +61,7 @@ require 'json'
 			}
 			puts @@hash1
 =end
-			for i in 1..170
+			for i in 1..50
 				html = "http://annuaire-des-mairies.com/" + @@lien[i]
 				page1 = Nokogiri::HTML(open(html)) 
 				az = page1.xpath("/html/body/div/main/section[2]/div/table/tbody/tr[4]/td[2]")
@@ -77,12 +79,12 @@ require 'json'
 				@@lien << nom['href']
 			end
 			#puts @@lien
-			for i in 1..100
+			for i in 1..50
 				html = "http://annuaire-des-mairies.com/" + @@lien[i]
 				page2 = Nokogiri::HTML(open(html))
 				real = page2.xpath("/html/body/div/main/section[2]/div/table/tbody/tr[4]/td[2]")
 				email = real.text
-				@@hash2[@@nomville[i]] = email 
+				@@hash1[@@nomville[i]] = email 
   			end
   			#puts @@hash2
 		end
@@ -94,31 +96,31 @@ require 'json'
 				@@lien << nom['href']
 			end
 			#puts @@lien	
-			for i in 1..95
+			for i in 1..50
 				html = "http://annuaire-des-mairies.com/" + @@lien[i]
 				page3 = Nokogiri::HTML(open(html))
 				om = page3.xpath("/html/body/div/main/section[2]/div/table/tbody/tr[4]/td[2]")
 				email = om.text
-				@@hash3[@@nomville[i]] = email 
+				@@hash1[@@nomville[i]] = email 
 	  		end
   		#puts @@hash3
 		end
-		def fgh
-		  @@hash = @@hash1.merge(@@hash2)
-		  @@hash = @@hash.merge(@@hash3)
-		  puts @@hash
-		  return @@hash
 
+		def fgh
+		 	File.open("../db/townhalls.json","w") do |f|
+		      f.write(@@hash1.to_json)
+	    	end
 		end
-		
-	File.open("/home/eric/ultimate_townhall/db/townhalls.json","w") do |F|
-	F.write(@@hash.to_json)
-end
+			
 	end
 	p = Scrapper.new
 	p.ville_ain_nom
 	p.ville_aisne
 	p.alpes_de_haute_provence
 	p.fgh
+
+	
+
+	
 
 	
